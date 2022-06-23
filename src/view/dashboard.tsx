@@ -18,24 +18,6 @@ import * as React from "react";
 import { Outlet } from "react-router-dom";
 import { mainListItems } from "../components/sideNavBar";
 
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
 const drawerWidth: number = 240;
 
 interface AppBarProps extends MuiAppBarProps {
