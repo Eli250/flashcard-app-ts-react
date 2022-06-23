@@ -1,3 +1,4 @@
+import { gql, useMutation } from "@apollo/client";
 import { yupResolver } from "@hookform/resolvers/yup";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Avatar from "@mui/material/Avatar";
@@ -10,11 +11,10 @@ import Link from "@mui/material/Link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { gql, useMutation } from "@apollo/client";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { userSchema } from "../validations/user.validation";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { userSchema } from "../validations/user.validation";
 interface ISignupInputs {
   name: string;
   email: string;
@@ -35,7 +35,8 @@ const SIGN_UP_USER = gql`
   }
 `;
 export default function SignUp() {
-  const [signupUser, { data, loading }] = useMutation(SIGN_UP_USER);
+  const [signupUser] = useMutation(SIGN_UP_USER);
+  // const [signupUser, { data, loading }] = useMutation(SIGN_UP_USER);
   const navigate = useNavigate();
   const {
     register,
@@ -56,7 +57,7 @@ export default function SignUp() {
       },
     })
       .then(() => {
-        console.log(data, "data");
+        console.log(data);
         navigate("/signin");
       })
       .catch((error) => {
