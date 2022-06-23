@@ -10,9 +10,11 @@ import Link from "@mui/material/Link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { gql, useMutation } from "@apollo/client";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { userSchema } from "../validations/user.validation";
-
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 interface ISignupInputs {
   name: string;
   email: string;
@@ -21,7 +23,20 @@ interface ISignupInputs {
 
 const theme = createTheme();
 
+const SIGN_UP_USER = gql`
+  mutation Signup($name: String!, $email: String!, $password: String!) {
+    signup(name: $name, email: $email, password: $password) {
+      token
+      user {
+        id
+        name
+      }
+    }
+  }
+`;
 export default function SignUp() {
+  const [signupUser, { data, loading }] = useMutation(SIGN_UP_USER);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -29,10 +44,25 @@ export default function SignUp() {
   } = useForm<ISignupInputs>({
     resolver: yupResolver(userSchema),
   });
-  const onsubmit: SubmitHandler<ISignupInputs> | undefined = (
+  const onsubmit: SubmitHandler<ISignupInputs> | undefined = async (
     data: ISignupInputs
   ) => {
     console.log(data);
+    await signupUser({
+      variables: {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      },
+    })
+      .then(() => {
+        console.log(data, "data");
+        navigate("/signin");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+        console.log(error.message);
+      });
   };
 
   return (

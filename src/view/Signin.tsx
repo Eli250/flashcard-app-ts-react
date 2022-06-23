@@ -96,7 +96,6 @@ export default function SignIn() {
                   fullWidth
                   id="email"
                   label="Email Address"
-                  // name="email"
                   autoComplete="email"
                   autoFocus
                   {...register("email")}
@@ -109,7 +108,6 @@ export default function SignIn() {
                 <TextField
                   margin="normal"
                   fullWidth
-                  // name="password"
                   label="Password"
                   type="password"
                   id="password"
