@@ -7,12 +7,12 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
-import Link from "@mui/material/Link";
+
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { userSchema } from "../validations/user.validation";
 interface ISignupInputs {
@@ -138,7 +138,7 @@ export default function SignUp() {
               </Button>
               <Grid container justifyContent="center">
                 <Grid item>
-                  <Link href="signin" variant="body2">
+                  <Link to="/signin" style={{ color: "#1976d2" }}>
                     Already have an account? Sign in
                   </Link>
                 </Grid>
