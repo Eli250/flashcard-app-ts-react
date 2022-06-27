@@ -1,8 +1,7 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import MenuIcon from "@mui/icons-material/Menu";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+import { Avatar } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -14,7 +13,7 @@ import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { mainListItems } from "../components/sideNavBar";
 
 const drawerWidth: number = 240;
@@ -70,11 +69,19 @@ const Drawer = styled(MuiDrawer, {
 const mdTheme = createTheme();
 
 function DashboardContent() {
+  const user = JSON.parse(localStorage.getItem("authorization") as string);
   const [open, setOpen] = React.useState(true);
+  const navigate = useNavigate();
+  React.useEffect(() => {
+    if (user === null) {
+      navigate("/signin");
+    }
+  }, [user, navigate]);
+
   const toggleDrawer = () => {
     setOpen(!open);
   };
-
+  const avatarName: string = Array.from(user.login?.user.name)[0] as string;
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
@@ -106,10 +113,9 @@ function DashboardContent() {
             >
               Dashboard
             </Typography>
+            Welcome, {user.login?.user.name}
             <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
+              <Avatar>{avatarName}</Avatar>
             </IconButton>
           </Toolbar>
         </AppBar>
