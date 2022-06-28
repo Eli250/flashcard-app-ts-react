@@ -2,7 +2,7 @@
 
 ## Deployment URL
 
-[Flashcard App Deplyment](eli-flashcard.netlify.app)
+[Flashcard App Deplyment](https://eli-flashcard.netlify.app/)
 
 ## Available Scripts
 
