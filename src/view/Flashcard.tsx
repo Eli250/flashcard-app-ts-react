@@ -6,6 +6,7 @@ import FormGroup from "@mui/material/FormGroup";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import CardList from "./CardList";
 
 const style = {
   position: "absolute" as "absolute",
@@ -26,6 +27,8 @@ export default function Flashcard() {
 
   return (
     <div>
+      <Typography variant="h6">All Flashcards</Typography>
+      <CardList />
       <Button onClick={handleOpen}>Open modal</Button>
       <Modal
         open={open}

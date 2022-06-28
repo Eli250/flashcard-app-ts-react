@@ -1,6 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
 import { yupResolver } from "@hookform/resolvers/yup";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { CircularProgress } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -35,7 +36,7 @@ const SIGN_UP_USER = gql`
   }
 `;
 export default function SignUp() {
-  const [signupUser] = useMutation(SIGN_UP_USER);
+  const [signupUser, { loading }] = useMutation(SIGN_UP_USER);
   // const [signupUser, { data, loading }] = useMutation(SIGN_UP_USER);
   const navigate = useNavigate();
   const {
@@ -48,7 +49,6 @@ export default function SignUp() {
   const onsubmit: SubmitHandler<ISignupInputs> | undefined = async (
     data: ISignupInputs
   ) => {
-    console.log(data);
     await signupUser({
       variables: {
         name: data.name,
@@ -57,12 +57,14 @@ export default function SignUp() {
       },
     })
       .then(() => {
-        console.log(data);
+        toast.success(
+          "User registered successfully 👍. Please login to proceed."
+        );
         navigate("/signin");
       })
       .catch((error) => {
         toast.error(error.message);
-        console.log(error.message);
+        console.log(error);
       });
   };
 
@@ -134,7 +136,11 @@ export default function SignUp() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign Up
+                {loading ? (
+                  <CircularProgress sx={{ color: "white" }} />
+                ) : (
+                  "Sign Up"
+                )}
               </Button>
               <Grid container justifyContent="center">
                 <Grid item>

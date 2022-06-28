@@ -1,4 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { gql, useMutation } from "@apollo/client";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -10,8 +11,10 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { loginSchema } from "../validations/user.validation";
+import { toast } from "react-toastify";
+import CircularProgress from "@mui/material/CircularProgress";
 
 interface ISigninInputs {
   email: string;
@@ -19,27 +22,28 @@ interface ISigninInputs {
   label: string;
 }
 
-// function Copyright(props: any) {
-//   return (
-//     <Typography
-//       variant="body2"
-//       color="text.secondary"
-//       align="center"
-//       {...props}
-//     >
-//       {"Copyright © "}
-//       <Link color="inherit" href="https://flashcard-app-ts-be.herokuapp.com/">
-//         Your Website
-//       </Link>{" "}
-//       {new Date().getFullYear()}
-//       {"."}
-//     </Typography>
-//   );
-// }
+const SIGNIN_USER = gql`
+  mutation Signin($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      token
+      user {
+        name
+        email
+      }
+    }
+  }
+`;
 
 const theme = createTheme();
 
 export default function SignIn() {
+  const [signinUser, { loading }] = useMutation(SIGNIN_USER, {
+    onCompleted: (signinUser) => {
+      localStorage.setItem("authorization", JSON.stringify(signinUser));
+      navigate("/dashboard");
+    },
+  });
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -47,10 +51,22 @@ export default function SignIn() {
   } = useForm<ISigninInputs>({
     resolver: yupResolver(loginSchema),
   });
-  const onsubmit: SubmitHandler<ISigninInputs> | undefined = (
+  const onsubmit: SubmitHandler<ISigninInputs> | undefined = async (
     data: ISigninInputs
   ) => {
-    console.log(data);
+    await signinUser({
+      variables: {
+        email: data.email,
+        password: data.password,
+      },
+    })
+      .then(() => {
+        console.log(loading);
+      })
+      .catch((error) => {
+        toast.error(error.message);
+        console.log(error);
+      });
   };
 
   return (
@@ -125,7 +141,11 @@ export default function SignIn() {
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  Sign In
+                  {loading ? (
+                    <CircularProgress sx={{ color: "white" }} />
+                  ) : (
+                    "Sign In"
+                  )}
                 </Button>
               </form>
               <Grid container>
