@@ -16,6 +16,12 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { userSchema } from "../validations/user.validation";
+import {
+  fetchUserAction,
+  userErrorAction,
+} from "../redux/reducers/user.reducer";
+import { useDispatch } from "react-redux";
+import { Dispatch } from "redux";
 interface ISignupInputs {
   name: string;
   email: string;
@@ -36,6 +42,7 @@ const SIGN_UP_USER = gql`
   }
 `;
 export default function SignUp() {
+  const dispatch: Dispatch = useDispatch();
   const [signupUser, { loading }] = useMutation(SIGN_UP_USER);
   // const [signupUser, { data, loading }] = useMutation(SIGN_UP_USER);
   const navigate = useNavigate();
@@ -56,7 +63,8 @@ export default function SignUp() {
         password: data.password,
       },
     })
-      .then(() => {
+      .then((value) => {
+        dispatch(fetchUserAction(value.data.signup));
         toast.success(
           "User registered successfully 👍. Please login to proceed."
         );
@@ -64,7 +72,7 @@ export default function SignUp() {
       })
       .catch((error) => {
         toast.error(error.message);
-        console.log(error);
+        dispatch(userErrorAction(error.message));
       });
   };
 

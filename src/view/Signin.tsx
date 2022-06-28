@@ -15,6 +15,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { loginSchema } from "../validations/user.validation";
 import { toast } from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
+import {
+  fetchUserAction,
+  userErrorAction,
+} from "../redux/reducers/user.reducer";
+import { useDispatch } from "react-redux";
+import { Dispatch } from "redux";
 
 interface ISigninInputs {
   email: string;
@@ -37,6 +43,7 @@ const SIGNIN_USER = gql`
 const theme = createTheme();
 
 export default function SignIn() {
+  const dispatch: Dispatch = useDispatch();
   const [signinUser, { loading }] = useMutation(SIGNIN_USER, {
     onCompleted: (signinUser) => {
       localStorage.setItem("authorization", JSON.stringify(signinUser));
@@ -60,12 +67,12 @@ export default function SignIn() {
         password: data.password,
       },
     })
-      .then(() => {
-        console.log(loading);
+      .then((value) => {
+        dispatch(fetchUserAction(value.data.login));
       })
       .catch((error) => {
         toast.error(error.message);
-        console.log(error);
+        dispatch(userErrorAction(error.message));
       });
   };
 

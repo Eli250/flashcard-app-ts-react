@@ -14,7 +14,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
   },
   "include": ["src", "test/App.test.tsx"]
 }
